@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}About Heart Health Check - Understanding Heart Health{% endblock %}
+
+{% block extra_head %}
+<style>
+    .hero-section {
+        text-align: center;
+        padding: 80px 20px;
+        background: rgba(255, 255, 255, 0.9);
+        margin: 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--text-color);
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+
+    .page-header p {
+        font-size: 1.3rem;
+        font-weight: 300;
+        color: var(--accent-color);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .ecg-container {
+        text-align: center;
+        margin: 3rem 0;
+    }
+
+    .ecg-animation {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+    }
+
+    .ecg-line {
+        fill: none;
+        stroke: #ff6b6b;
+        stroke-width: 3;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; stroke-width: 3; }
+        50% { opacity: 0.7; stroke-width: 4; }
+    }
+
+    .info-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid var(--border-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .card-icon {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .info-card h3 {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .info-card p {
+        color: var(--text-color);
+        font-size: 1.1rem;
+        line-height: 1.7;
+        margin-bottom: 1rem;
+    }
+
+    .highlight {
+        background: linear-gradient(135deg, rgba(255,193,7,0.1), rgba(255,193,7,0.05));
+        border-left: 5px solid #ffc107;
+    }
+
+    .warning {
+        background: linear-gradient(135deg, rgba(220,53,69,0.08), rgba(220,53,69,0.03));
+        border-left: 5px solid var(--primary-color);
+    }
+
+    .risk-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .risk-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: rgba(231, 76, 60, 0.1);
+        border-radius: 10px;
+        transition: background-color 0.3s ease;
+        color: var(--text-color);
+    }
+
+    .risk-item:hover {
+        background: rgba(231, 76, 60, 0.15);
+    }
+
+    .risk-icon {
+        font-size: 1.5rem;
+    }
+
+    .workflow-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .workflow-step {
+        background: rgba(52, 152, 219, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .workflow-step:hover {
+        transform: translateY(-3px);
+    }
+
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin: 0 auto 1rem;
+        font-size: 1.2rem;
+    }
+
+    .step-content h4 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .step-content p {
+        color: var(--text-color);
+        font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+        }
+
+        .info-card {
+            padding: 1.5rem;
+        }
+
+        .risk-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .workflow-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1>About Heart Health Check</h1>
+      <p>Understanding cardiovascular health and our AI-powered assessment system</p>
+    </div>
+
+    <!-- ECG Animation -->
+    <div class="ecg-container">
+      <svg viewBox="0 0 600 100" class="ecg-animation">
+        <polyline
+          points="
+            0,50
+            50,50
+            70,50
+            80,20
+            90,80
+            100,50
+            160,50
+            180,50
+            190,30
+            200,70
+            210,50
+            260,50
+            600,50
+          "
+          class="ecg-line"
+        />
+      </svg>
+    </div>
+
+    <!-- What is Heart Disease -->
+    <div class="info-card">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 12.27 18.6 15.36 13.45 20.03L12 21.35Z" fill="var(--primary-color)"/>
+        </svg>
+      </div>
+      <h3>What is Cardiovascular Disease?</h3>
+      <p>Cardiovascular disease refers to a range of conditions that affect the heart and blood vessels. It remains the leading cause of death globally, often developing silently over many years. Common types include coronary artery disease, heart failure, arrhythmias, and hypertension-related complications.</p>
+    </div>
+
+    <!-- Risk Factors -->
+    <div class="info-card">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="var(--warning-color)"/>
+        </svg>
+      </div>
+      <h3>Major Risk Factors</h3>
+      <div class="risk-grid">
+        <div class="risk-item">
+          <span class="risk-icon">🩺</span>
+          <span>High Blood Pressure</span>
+        </div>
+        <div class="risk-item">
+          <span class="risk-icon">🧈</span>
+          <span>High Cholesterol</span>
+        </div>
+        <div class="risk-item">
+          <span class="risk-icon">🍬</span>
+          <span>Diabetes</span>
+        </div>
+        <div class="risk-item">
+          <span class="risk-icon">🚬</span>
+          <span>Smoking & Alcohol</span>
+        </div>
+        <div class="risk-item">
+          <span class="risk-icon">⚖️</span>
+          <span>Obesity</span>
+        </div>
+        <div class="risk-item">
+          <span class="risk-icon">🏃‍♂️</span>
+          <span>Lack of Physical Activity</span>
+        </div>
+        <div class="risk-item">
+          <span class="risk-icon">👴</span>
+          <span>Age</span>
+        </div>
+        <div class="risk-item">
+          <span class="risk-icon">🧬</span>
+          <span>Family History</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Early Detection -->
+    <div class="info-card highlight">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H19V9Z" fill="var(--success-color)"/>
+        </svg>
+      </div>
+      <h3>Why Early Detection Matters</h3>
+      <p>Early identification of cardiovascular risk factors allows for timely preventive interventions and lifestyle modifications. Machine learning algorithms can detect subtle patterns in health data that might be missed by traditional assessment methods, enabling proactive healthcare management.</p>
+    </div>
+
+    <!-- About the Project -->
+    <div class="info-card">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="var(--primary-color)"/>
+          <path d="M2 17L12 22L22 17" fill="var(--primary-color)"/>
+          <path d="M2 12L12 17L22 12" fill="var(--primary-color)"/>
+        </svg>
+      </div>
+      <h3>About This AI Project</h3>
+      <p>Heart Health Check is a machine learning-based system that analyzes cardiovascular risk using comprehensive medical and lifestyle data. The system employs advanced algorithms to provide personalized risk assessments and health insights.</p>
+      <p><strong>Dataset:</strong> Cardiovascular disease prediction dataset with 70,000+ patient records from medical examinations.</p>
+      <p><strong>Features:</strong> Age, gender, height, weight, blood pressure (systolic/diastolic), cholesterol levels, glucose levels, smoking status, alcohol consumption, and physical activity.</p>
+      <p><strong>Preprocessing:</strong> Age conversion from days to years, BMI calculation, feature scaling using StandardScaler.</p>
+      <p><strong>Model Training:</strong> Multiple algorithms compared including Logistic Regression, KNN, Decision Tree, Random Forest, Gradient Boosting, and Naive Bayes variants.</p>
+    </div>
+
+    <!-- ML Workflow -->
+    <div class="info-card">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6H20V16H4M20 18C20.55 18 21 17.55 21 17V5C21 4.45 20.55 4 20 4H4C3.45 4 3 4.45 3 5V17C3 17.55 3.45 18 4 18H0V20H24V18H20Z" fill="var(--accent-color)"/>
+        </svg>
+      </div>
+      <h3>Machine Learning Workflow</h3>
+      <div class="workflow-grid">
+        <div class="workflow-step">
+          <div class="step-content">
+            <h4>1.Data Collection</h4>
+            <p>Gathering comprehensive health datasets</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-content">
+            <h4>2.Data Preprocessing</h4>
+            <p>Cleaning and preparing data for analysis</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+        
+          <div class="step-content">
+            <h4>3.Feature Engineering</h4>
+            <p>Creating meaningful health indicators</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+       
+          <div class="step-content">
+            <h4>4.Model Training</h4>
+            <p>Training multiple ML algorithms</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+        
+          <div class="step-content">
+            <h4>5.Model Selection</h4>
+            <p>Choosing the best performing model</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+       
+          <div class="step-content">
+            <h4>6.Deployment</h4>
+            <p>Building the web application</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Why Gradient Boosting -->
+    <div class="info-card highlight">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21.02L12 17.77L5.82 21.02L7 14L2 9L8.91 8.26L12 2Z" fill="var(--success-color)"/>
+        </svg>
+      </div>
+      <h3>Why Gradient Boosting?</h3>
+      <p><strong>Gradient Boosting achieved the highest accuracy (73.8%)</strong> in our evaluation due to its ensemble learning approach that combines multiple weak learners sequentially. Each new model corrects the errors of the previous ones, leading to a strong predictive model that effectively handles complex feature interactions and provides robust performance on medical prediction tasks.</p>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="info-card warning">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM13 7H11V11H13V7ZM13 13H11V15H13V13Z" fill="var(--warning-color)"/>
+        </svg>
+      </div>
+      <h3>Medical Disclaimer</h3>
+      <p><strong>Important:</strong> This AI assessment tool is designed for educational and informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare providers for medical decisions and personalized health guidance.</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

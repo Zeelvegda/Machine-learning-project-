@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+
+{% block title %}Model Performance - CardioPredict AI{% endblock %}
+
+{% block extra_head %}
+<style>
+    .section { padding: 2rem 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+    .page-header { text-align: center; margin-bottom: 2rem; }
+    .page-header h1 { font-size: 2.5rem; color: var(--primary-color); }
+    .page-header p { font-size: 1.2rem; color: var(--accent-color); }
+    .ecg-container { text-align: center; margin: 2rem 0; }
+    .ecg-animation { width: 100%; max-width: 600px; height: auto; }
+    .ecg-line { fill: none; stroke: var(--primary-color); stroke-width: 2; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .performance-card, .chart-card, .metrics-card, .info-card { background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 2rem; transition: transform 0.3s; }
+    .performance-card:hover, .chart-card:hover, .metrics-card:hover, .info-card:hover { transform: translateY(-5px); }
+    .highlight { border-left: 5px solid var(--success-color); }
+    .card-icon { margin-bottom: 1rem; }
+    .model-highlight h4 { color: var(--primary-color); }
+    .accuracy-metric { display: flex; align-items: center; gap: 0.5rem; }
+    .accuracy-value { font-size: 2rem; font-weight: bold; color: var(--success-color); }
+    .chart-container { position: relative; height: 300px; margin: 1rem 0; }
+    .chart-legend { display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; }
+    .legend-color { width: 12px; height: 12px; border-radius: 50%; }
+    .feature-insights ul { list-style: none; padding: 0; }
+    .feature-insights li { margin-bottom: 0.5rem; }
+    .metrics-table { display: table; width: 100%; border-collapse: collapse; }
+    .metric-row { display: table-row; }
+    .metric-cell { display: table-cell; padding: 0.75rem; border-bottom: 1px solid #ddd; text-align: center; }
+    .metric-row.header { background-color: var(--primary-color); color: white; font-weight: bold; }
+    .metric-row.highlight { background-color: #e9ecef; }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .page-header h1 { font-size: 2rem; }
+        .performance-card, .chart-card, .metrics-card, .info-card { padding: 1rem; }
+        .chart-container { height: 200px; }
+        .metrics-table { font-size: 0.9rem; }
+        .metric-cell { padding: 0.5rem; }
+        .chart-legend { flex-direction: column; align-items: center; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1>Model Performance Analysis</h1>
+      <p>Detailed evaluation of our AI algorithms and feature importance</p>
+      <div style="margin-top: 1rem;">
+        <a href="{{ url_for('graphs') }}" class="btn" style="background: var(--primary-color); color: white; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 5px; display: inline-block;">View Detailed Comparison Graphs</a>
+      </div>
+    </div>
+
+    <!-- ECG Animation -->
+    <div class="ecg-container">
+      <svg viewBox="0 0 600 100" class="ecg-animation">
+        <polyline
+          points="
+            0,50
+            50,50
+            70,50
+            80,20
+            90,80
+            100,50
+            160,50
+            180,50
+            190,30
+            200,70
+            210,50
+            260,50
+            600,50
+          "
+          class="ecg-line"
+        />
+      </svg>
+    </div>
+
+    <!-- Best Model Highlight -->
+    <div class="performance-card highlight">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21.02L12 17.77L5.82 21.02L7 14L2 9L8.91 8.26L12 2Z" fill="var(--success-color)"/>
+        </svg>
+      </div>
+      <h3>🏆 Best Performing Algorithm</h3>
+      <div class="model-highlight">
+        <h4>Gradient Boosting Classifier</h4>
+        <div class="accuracy-metric">
+          <span class="accuracy-value" id="bestAccuracy">73.8%</span>
+          <span class="accuracy-label">Highest Accuracy</span>
+        </div>
+      </div>
+      <p>Gradient Boosting achieved superior performance through its ensemble learning approach, combining multiple weak learners to create a strong predictive model. It effectively handles complex feature interactions and provides robust performance on medical prediction tasks.</p>
+    </div>
+
+    <!-- Accuracy Comparison Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 17H7V10H9V17ZM13 17H11V7H13V17ZM17 17H15V13H17V17ZM19 19H5V5H19V19Z" fill="var(--primary-color)"/>
+          </svg>
+        </div>
+        <h3>Algorithm Performance Comparison</h3>
+      </div>
+      <div class="chart-container">
+        <canvas id="accuracyChart"></canvas>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: var(--primary-color);"></span>
+          <span>Accuracy Score</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: var(--success-color);"></span>
+          <span>Precision</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: var(--warning-color);"></span>
+          <span>Recall</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature Importance Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="var(--accent-color)"/>
+          </svg>
+        </div>
+        <h3>Feature Importance Analysis</h3>
+      </div>
+      <div class="chart-container">
+        <canvas id="heatmapChart"></canvas>
+      </div>
+      <div class="feature-insights">
+        <h4>Key Insights:</h4>
+        <ul>
+          <li><strong>Age & Blood Pressure:</strong> Most influential predictors of cardiovascular risk</li>
+          <li><strong>Cholesterol Levels:</strong> Strong correlation with heart disease outcomes</li>
+          <li><strong>Lifestyle Factors:</strong> Smoking and physical activity significantly impact risk assessment</li>
+          <li><strong>Body Measurements:</strong> Height, weight, and BMI contribute to comprehensive evaluation</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Model Metrics Table -->
+    <div class="metrics-card">
+      <h3>Detailed Performance Metrics</h3>
+      <div class="metrics-table">
+        <div class="metric-row header">
+          <div class="metric-cell">Algorithm</div>
+          <div class="metric-cell">Accuracy</div>
+          <div class="metric-cell">Precision</div>
+          <div class="metric-cell">Recall</div>
+          <div class="metric-cell">F1-Score</div>
+        </div>
+        <div class="metric-row highlight">
+          <div class="metric-cell">Gradient Boosting</div>
+          <div class="metric-cell">73.8%</div>
+          <div class="metric-cell">75.2%</div>
+          <div class="metric-cell">72.1%</div>
+          <div class="metric-cell">73.6%</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-cell">Random Forest</div>
+          <div class="metric-cell">72.4%</div>
+          <div class="metric-cell">74.1%</div>
+          <div class="metric-cell">70.8%</div>
+          <div class="metric-cell">72.4%</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-cell">Decision Tree</div>
+          <div class="metric-cell">69.7%</div>
+          <div class="metric-cell">71.3%</div>
+          <div class="metric-cell">68.2%</div>
+          <div class="metric-cell">69.7%</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-cell">Logistic Regression</div>
+          <div class="metric-cell">71.2%</div>
+          <div class="metric-cell">72.8%</div>
+          <div class="metric-cell">69.6%</div>
+          <div class="metric-cell">71.1%</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-cell">KNN</div>
+          <div class="metric-cell">68.9%</div>
+          <div class="metric-cell">70.5%</div>
+          <div class="metric-cell">67.3%</div>
+          <div class="metric-cell">68.8%</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-cell">Naive Bayes</div>
+          <div class="metric-cell">67.4%</div>
+          <div class="metric-cell">69.1%</div>
+          <div class="metric-cell">65.8%</div>
+          <div class="metric-cell">67.4%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Methodology Note -->
+    <div class="info-card">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H19V9Z" fill="var(--primary-color)"/>
+        </svg>
+      </div>
+      <h3>Evaluation Methodology</h3>
+      <p>Models were evaluated using 10-fold cross-validation on a comprehensive dataset of over 70,000 patient records. Performance metrics include accuracy, precision, recall, and F1-score to ensure balanced evaluation across different aspects of predictive performance.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+async function loadCharts() {
+    try {
+        console.log('Loading chart data from API...');
+
+        const response = await fetch('/api/graphs');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Received data:', data);
+
+        if (!data.metrics || !data.graphs) {
+            throw new Error('Invalid data format received');
+        }
+
+        // Update best accuracy display
+        const bestAccuracyElement = document.getElementById('bestAccuracy');
+        if (bestAccuracyElement) {
+            bestAccuracyElement.textContent = (data.metrics.accuracy * 100).toFixed(1) + '%';
+        }
+
+        // Load Algorithm Performance Chart
+        if (typeof Chart !== 'undefined') {
+            // Algorithm Performance Chart
+            const accuracyChartCanvas = document.getElementById('accuracyChart');
+            if (accuracyChartCanvas) {
+                new Chart(accuracyChartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Accuracy', 'Precision', 'Recall', 'F1-Score'],
+                        datasets: [{
+                            label: 'Performance Metrics',
+                            data: [
+                                data.metrics.accuracy * 100,
+                                data.metrics.precision * 100,
+                                data.metrics.recall * 100,
+                                data.metrics.f1 * 100
+                            ],
+                            backgroundColor: [
+                                'var(--primary-color)',
+                                'var(--success-color)',
+                                'var(--warning-color)',
+                                'var(--accent-color)'
+                            ],
+                            borderRadius: 8,
+                            borderSkipped: false,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeOutBounce',
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            tooltip: {
+                                backgroundColor: 'var(--card-bg)',
+                                titleColor: 'var(--text-primary)',
+                                bodyColor: 'var(--text-secondary)',
+                                borderColor: 'var(--border-color)',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.raw.toFixed(1) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'var(--border-color)',
+                                },
+                                ticks: {
+                                    color: 'var(--text-secondary)',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Score',
+                                    color: 'var(--text-primary)',
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    color: 'var(--text-secondary)',
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Feature Importance Chart
+            const heatmapChartCanvas = document.getElementById('heatmapChart');
+            if (heatmapChartCanvas && data.feature_importance) {
+                const featureNames = Object.keys(data.feature_importance);
+                const featureValues = Object.values(data.feature_importance);
+
+                new Chart(heatmapChartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: featureNames,
+                        datasets: [{
+                            label: 'Feature Importance',
+                            data: featureValues,
+                            backgroundColor: 'var(--primary-color)',
+                            borderRadius: 4,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 1500,
+                            easing: 'easeOutQuart',
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            tooltip: {
+                                backgroundColor: 'var(--card-bg)',
+                                titleColor: 'var(--text-primary)',
+                                bodyColor: 'var(--text-secondary)',
+                                borderColor: 'var(--border-color)',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + (context.raw * 100).toFixed(2) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'var(--border-color)',
+                                },
+                                ticks: {
+                                    color: 'var(--text-secondary)',
+                                    callback: function(value) {
+                                        return (value * 100).toFixed(1) + '%';
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Importance Score',
+                                    color: 'var(--text-primary)',
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    color: 'var(--text-secondary)',
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        console.log('Charts loaded successfully');
+
+    } catch (error) {
+        console.error('Error loading charts:', error);
+
+        // Show error message
+        const chartContainers = document.querySelectorAll('.chart-container');
+        chartContainers.forEach(container => {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--warning-color);">
+                    <p>Unable to load chart data: ${error.message}</p>
+                    <p>Please refresh the page or try again later.</p>
+                </div>
+            `;
+        });
+    }
+}
+
+// Load charts when page is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadCharts);
+} else {
+    loadCharts();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,705 @@
+{% extends "base.html" %}
+
+{% block title %}Heart Health Check - Predict{% endblock %}
+
+{% block extra_head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    body {
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%);
+        min-height: 100vh;
+    }
+
+    .content h1 {
+        color: var(--primary-color);
+        font-size: clamp(2.5em, 6vw, 4.5em);
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .content p {
+        color: var(--text-color);
+        font-size: clamp(1.2em, 3vw, 1.8em);
+        margin-bottom: 40px;
+        line-height: 1.6;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+        color: white;
+        padding: 18px 45px;
+        border: none;
+        border-radius: 35px;
+        font-size: clamp(1.1em, 2.5vw, 1.6em);
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        box-shadow: 0 6px 20px rgba(231,76,60,0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(231,76,60,0.4);
+    }
+
+    /* Enhanced Form */
+    .form-container {
+        background: var(--card-bg);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 40px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .form-card {
+        background: var(--bg-color);
+        padding: 25px;
+        border-radius: 15px;
+        border-left: 5px solid var(--primary-color);
+        transition: all 0.3s;
+        position: relative;
+    }
+
+    .form-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(231,76,60,0.2);
+    }
+
+    .form-card label {
+        color: var(--primary-color);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+    }
+
+    .form-card input, .form-card select {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        font-size: 1em;
+        transition: all 0.3s;
+        background: white;
+    }
+
+    .form-card input:focus, .form-card select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 10px rgba(231,76,60,0.3);
+        background: #fef2f2;
+    }
+
+    .form-card input:valid {
+        border-color: var(--success-color);
+    }
+
+    .form-card input:invalid:not(:placeholder-shown) {
+        border-color: #e74c3c;
+    }
+
+    .help-text {
+        font-size: 0.85em;
+        color: var(--accent-color);
+        margin-top: 8px;
+        display: block;
+    }
+
+    .result {
+        margin-top: 30px;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+
+    .result.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .result.danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* Modal Popup Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6);
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal.show {
+        display: block;
+    }
+
+    .modal-content {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        margin: auto;
+        padding: 0;
+        border: none;
+        border-radius: 30px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: slideUp 0.4s ease-out;
+        overflow: hidden;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translate(-50%, -40%);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+        }
+    }
+
+    .modal-header {
+        padding: 40px 40px 20px;
+        text-align: center;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+        color: white;
+        position: relative;
+    }
+
+    .modal-header.low-risk {
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    }
+
+    .modal-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        animation: bounce 1s ease-in-out;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .modal-title {
+        font-size: 2.5em;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-subtitle {
+        font-size: 1.1em;
+        opacity: 0.95;
+        margin: 0;
+    }
+
+    .modal-body {
+        padding: 40px;
+        text-align: center;
+    }
+
+    .modal-message {
+        font-size: 1.3em;
+        color: var(--text-color);
+        line-height: 1.8;
+        margin-bottom: 25px;
+        font-weight: 500;
+    }
+
+    .risk-score {
+        background: linear-gradient(135deg, rgba(231,76,60,0.1), rgba(192,57,43,0.1));
+        border-radius: 20px;
+        padding: 25px;
+        margin: 20px 0;
+        border: 2px solid var(--primary-color);
+    }
+
+    .risk-score.low-risk {
+        background: linear-gradient(135deg, rgba(39,174,96,0.1), rgba(34,153,84,0.1));
+        border-color: #27ae60;
+    }
+
+    .score-label {
+        color: var(--accent-color);
+        font-size: 0.95em;
+        margin-bottom: 8px;
+    }
+
+    .score-value {
+        font-size: 2.5em;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .risk-score.low-risk .score-value {
+        color: #27ae60;
+    }
+
+    .recommendations {
+        background: rgba(52, 152, 219, 0.05);
+        border-left: 5px solid #3498db;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: left;
+        margin: 20px 0;
+    }
+
+    .recommendations h4 {
+        color: var(--primary-color);
+        margin-top: 0;
+        font-size: 1.1em;
+    }
+
+    .recommendations ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .recommendations li {
+        padding: 8px 0;
+        color: var(--text-color);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        font-size: 0.95em;
+    }
+
+    .recommendations li:last-child {
+        border-bottom: none;
+    }
+
+    .recommendations li:before {
+        content: "→ ";
+        color: #3498db;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .modal-footer {
+        padding: 20px 40px 40px;
+        text-align: center;
+        background: #f8f9fa;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-modal {
+        padding: 14px 30px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.05em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        min-width: 150px;
+    }
+
+    .btn-modal.primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+        color: white;
+        box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+    }
+
+    .btn-modal.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(231,76,60,0.4);
+    }
+
+    .btn-modal.secondary {
+        background: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .btn-modal.secondary:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .close-btn {
+        color: white;
+        float: right;
+        font-size: 32px;
+        font-weight: bold;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 10px 20px;
+        transition: all 0.3s;
+    }
+
+    .close-btn:hover {
+        color: #f0f0f0;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 20px;
+        }
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-content {
+            width: 95%;
+            margin: 20px;
+        }
+
+        .modal-header {
+            padding: 30px 20px 15px;
+        }
+
+        .modal-icon {
+            font-size: 60px;
+        }
+
+        .modal-title {
+            font-size: 1.8em;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px 25px;
+        }
+
+        .modal-buttons {
+            flex-direction: column;
+        }
+
+        .btn-modal {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1><i class="fas fa-heartbeat"></i> Heart Health Predictor</h1>
+    <p>Fill in your health details below to get an AI-powered assessment of your cardiovascular health risk.</p>
+
+    <div class="form-container">
+        <form id="predictionForm" class="form-grid">
+            <!-- Age -->
+            <div class="form-card">
+                <label for="age"><i class="fas fa-birthday-cake"></i> Age (years)</label>
+                <input type="number" id="age" name="age" required min="1" max="120" placeholder="Enter your age">
+                <span class="help-text">Your current age in years</span>
+            </div>
+
+            <!-- Height -->
+            <div class="form-card">
+                <label for="height"><i class="fas fa-ruler-vertical"></i> Height (cm)</label>
+                <input type="number" id="height" name="height" required min="50" max="250" step="0.1" placeholder="Enter height in cm">
+                <span class="help-text">Height in centimeters</span>
+            </div>
+
+            <!-- Weight -->
+            <div class="form-card">
+                <label for="weight"><i class="fas fa-weight"></i> Weight (kg)</label>
+                <input type="number" id="weight" name="weight" required min="20" max="300" step="0.1" placeholder="Enter weight in kg">
+                <span class="help-text">Weight in kilograms</span>
+            </div>
+
+            <!-- Systolic BP -->
+            <div class="form-card">
+                <label for="ap_hi"><i class="fas fa-heart"></i> Systolic Blood Pressure (mmHg)</label>
+                <input type="number" id="ap_hi" name="ap_hi" required min="60" max="300" placeholder="e.g., 120">
+                <span class="help-text">Upper blood pressure number</span>
+            </div>
+
+            <!-- Diastolic BP -->
+            <div class="form-card">
+                <label for="ap_lo"><i class="fas fa-heart"></i> Diastolic Blood Pressure (mmHg)</label>
+                <input type="number" id="ap_lo" name="ap_lo" required min="40" max="200" placeholder="e.g., 80">
+                <span class="help-text">Lower blood pressure number</span>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-card">
+                <label for="gender"><i class="fas fa-venus-mars"></i> Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="1">Female</option>
+                    <option value="2">Male</option>
+                </select>
+                <span class="help-text">Biological gender</span>
+            </div>
+
+            <!-- Cholesterol -->
+            <div class="form-card">
+                <label for="cholesterol"><i class="fas fa-tint"></i> Cholesterol Level</label>
+                <select id="cholesterol" name="cholesterol" required>
+                    <option value="">Select Level</option>
+                    <option value="1">Normal</option>
+                    <option value="2">Above Normal</option>
+                    <option value="3">Well Above Normal</option>
+                </select>
+                <span class="help-text">Cholesterol level category</span>
+            </div>
+
+            <!-- Glucose -->
+            <div class="form-card">
+                <label for="gluc"><i class="fas fa-syringe"></i> Glucose Level</label>
+                <select id="gluc" name="gluc" required>
+                    <option value="">Select Level</option>
+                    <option value="1">Normal</option>
+                    <option value="2">Above Normal</option>
+                    <option value="3">Well Above Normal</option>
+                </select>
+                <span class="help-text">Blood glucose level category</span>
+            </div>
+
+            <!-- Smoking -->
+            <div class="form-card">
+                <label for="smoke"><i class="fas fa-smoking"></i> Smoking Status</label>
+                <select id="smoke" name="smoke" required>
+                    <option value="">Select Status</option>
+                    <option value="0">Non-smoker</option>
+                    <option value="1">Smoker</option>
+                </select>
+                <span class="help-text">Current smoking status</span>
+            </div>
+
+            <!-- Alcohol -->
+            <div class="form-card">
+                <label for="alco"><i class="fas fa-wine-glass"></i> Alcohol Consumption</label>
+                <select id="alco" name="alco" required>
+                    <option value="">Select Frequency</option>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+                <span class="help-text">Regular alcohol consumption</span>
+            </div>
+
+            <!-- Physical Activity -->
+            <div class="form-card">
+                <label for="active"><i class="fas fa-running"></i> Physical Activity</label>
+                <select id="active" name="active" required>
+                    <option value="">Select Level</option>
+                    <option value="0">Inactive</option>
+                    <option value="1">Active</option>
+                </select>
+                <span class="help-text">Regular physical activity</span>
+            </div>
+        </form>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="submit" form="predictionForm" class="btn-primary">
+                <i class="fas fa-calculator"></i> Calculate Risk
+            </button>
+        </div>
+    </div>
+
+    <div id="result" class="result" style="display: none;"></div>
+</div>
+
+<!-- Creative Risk Modal -->
+<div id="riskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" id="modalHeader">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <div class="modal-icon" id="modalIcon">❤️</div>
+            <h2 class="modal-title" id="modalTitle">Assessment Result</h2>
+            <p class="modal-subtitle" id="modalSubtitle">Your cardiovascular health analysis</p>
+        </div>
+        <div class="modal-body">
+            <p class="modal-message" id="modalMessage">
+                Loading your assessment results...
+            </p>
+            <div class="risk-score" id="riskScore">
+                <p class="score-label">Risk Score</p>
+                <p class="score-value" id="scoreValue">--</p>
+            </div>
+            <div class="recommendations" id="recommendations">
+                <!-- Recommendations will be inserted here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="modal-buttons">
+                <button class="btn-modal secondary" id="retryBtn">↻ New Assessment</button>
+                <button class="btn-modal primary" id="homeBtn">🏠 Back to Home</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Creative messages based on risk levels
+    const creativeMessages = {
+        highRisk: {
+            main: "⚠️ Time to Take Action!",
+            subtitle: "Your heart health needs attention",
+            messages: [
+                "Your cardiovascular profile shows warning signs. Don't worry—early detection is the first step toward better health!",
+                "We've detected elevated cardiovascular risk. The good news? You now have the information to make positive changes!",
+                "Your heart is waving a flag 🚩. Schedule a check-up and let's make a plan to improve your health!",
+                "Your cardiovascular risk is elevated. This is your wake-up call to prioritize heart health!"
+            ],
+            icon: "❤️‍🔥",
+            recommendations: [
+                "Schedule an appointment with your cardiologist ASAP",
+                "Discuss lifestyle modifications (diet & exercise)",
+                "Monitor blood pressure & cholesterol regularly",
+                "Consider preventive medications if recommended",
+                "Reduce stress and get adequate sleep",
+                "Limit sodium, sugar, and processed foods"
+            ]
+        },
+        lowRisk: {
+            main: "🎉 Great News!",
+            subtitle: "Your heart is in good shape",
+            messages: [
+                "Fantastic! Your cardiovascular health looks strong. Keep up the amazing work! 💪",
+                "Congratulations! Your risk profile is excellent. You're doing great taking care of your heart! 🌟",
+                "Excellent news! Your heart health indicators are looking very positive. Keep maintaining those healthy habits! ✨",
+                "Amazing! Your cardiovascular assessment shows low risk. You're on the right track! 🚀"
+            ],
+            icon: "✅",
+            recommendations: [
+                "Continue with regular physical activity (150 min/week)",
+                "Maintain a heart-healthy diet rich in fruits & vegetables",
+                "Schedule regular health check-ups annually",
+                "Keep stress management practices in place",
+                "Stay hydrated and maintain healthy sleep patterns",
+                "Avoid smoking and excessive alcohol consumption"
+            ]
+        }
+    };
+
+    const modal = document.getElementById('riskModal');
+    const closeBtn = document.getElementById('closeModal');
+    const retryBtn = document.getElementById('retryBtn');
+    const homeBtn = document.getElementById('homeBtn');
+
+    // Close modal functions
+    closeBtn.onclick = function() {
+        modal.classList.remove('show');
+    }
+
+    retryBtn.onclick = function() {
+        modal.classList.remove('show');
+        document.getElementById('predictionForm').reset();
+        document.getElementById('result').style.display = 'none';
+    }
+
+    homeBtn.onclick = function() {
+        window.location.href = '/';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.classList.remove('show');
+        }
+    }
+
+    // Form submission with creative modal
+    document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+
+        try {
+            const response = await fetch('/api/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                alert('Error: ' + result.error);
+            } else {
+                // Determine risk level
+                const isHighRisk = result.prediction === 1;
+                const riskData = isHighRisk ? creativeMessages.highRisk : creativeMessages.lowRisk;
+                
+                // Get random creative message
+                const randomMessage = riskData.messages[Math.floor(Math.random() * riskData.messages.length)];
+                const probability = isHighRisk ? (result.probability_disease * 100).toFixed(1) : (result.probability_no_disease * 100).toFixed(1);
+                
+                // Update modal content
+                const modalHeader = document.getElementById('modalHeader');
+                const modalTitle = document.getElementById('modalTitle');
+                const modalSubtitle = document.getElementById('modalSubtitle');
+                const modalIcon = document.getElementById('modalIcon');
+                const modalMessage = document.getElementById('modalMessage');
+                const scoreValue = document.getElementById('scoreValue');
+                const riskScore = document.getElementById('riskScore');
+                const recommendationsDiv = document.getElementById('recommendations');
+
+                // Apply styling based on risk
+                modalHeader.classList.remove('low-risk');
+                riskScore.classList.remove('low-risk');
+                if (!isHighRisk) {
+                    modalHeader.classList.add('low-risk');
+                    riskScore.classList.add('low-risk');
+                }
+
+                // Update content
+                modalIcon.textContent = riskData.icon;
+                modalTitle.textContent = riskData.main;
+                modalSubtitle.textContent = riskData.subtitle;
+                modalMessage.textContent = randomMessage;
+                scoreValue.textContent = probability + '%';
+
+                // Build recommendations HTML
+                let recommendationsHTML = '<h4>' + (isHighRisk ? '⚡ What You Should Do:' : '✨ Keep Doing Great:') + '</h4><ul>';
+                riskData.recommendations.forEach(rec => {
+                    recommendationsHTML += '<li>' + rec + '</li>';
+                });
+                recommendationsHTML += '</ul>';
+                recommendationsDiv.innerHTML = recommendationsHTML;
+
+                // Show modal with animation
+                modal.classList.add('show');
+            }
+        } catch (error) {
+            alert('Error: Failed to get prediction. ' + error.message);
+        }
+    });
+</script>
+{% endblock %}

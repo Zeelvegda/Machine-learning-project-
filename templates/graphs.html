@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+{% block title %}Model Comparison Graphs - CardioPredict AI{% endblock %}
+
+{% block extra_head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    body {
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 25px;
+        padding: 50px 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .header-icon {
+        font-size: 70px;
+        margin-bottom: 20px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+    }
+
+    .header h1 {
+        color: var(--primary-color);
+        font-size: 2.5em;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .header p {
+        color: var(--accent-color);
+        font-size: 1.1em;
+        font-weight: 500;
+    }
+
+    .nav-bar {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .nav-link {
+        color: white;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+        text-decoration: none;
+        font-size: 1em;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 50px;
+        display: inline-block;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+        font-weight: 600;
+    }
+
+    .nav-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(231,76,60,0.4);
+    }
+
+    .model-details {
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+        border-radius: 20px;
+        padding: 35px;
+        margin-bottom: 40px;
+        border-left: 5px solid var(--primary-color);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    .model-details h2 {
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        font-size: 1.8em;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .model-details h2::before {
+        content: '📋';
+        font-size: 1.5em;
+    }
+
+    .model-details p {
+        color: var(--text-color);
+        line-height: 1.8;
+        margin-bottom: 12px;
+        font-size: 1em;
+    }
+
+    .model-details strong {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .graphs-container {
+        margin-top: 40px;
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 25px;
+        width: 100%;
+    }
+
+    .graph-box {
+        background: white;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        width: 100%;
+        min-width: 0;
+        border: 1px solid rgba(231,76,60,0.1);
+    }
+
+    .graph-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .graph-box h2 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 1.3em;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .graph-icon {
+        font-size: 1.4em;
+    }
+
+    .graph-box:nth-child(1) .graph-icon::before {
+        content: '📊';
+    }
+
+    .graph-box:nth-child(2) .graph-icon::before {
+        content: '📈';
+    }
+
+    .graph-box:nth-child(3) .graph-icon::before {
+        content: '🏆';
+    }
+
+    .graph-box img {
+        width: 100%;
+        height: auto;
+        border-radius: 15px;
+        transition: transform 0.3s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .graph-box:hover img {
+        transform: scale(1.01);
+    }
+
+    .loading {
+        text-align: center;
+        padding: 60px 40px;
+        color: var(--primary-color);
+        font-size: 1.2em;
+        font-weight: 600;
+    }
+
+    .loading::after {
+        content: '';
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        margin-left: 8px;
+        animation: blink 1.3s infinite;
+    }
+
+    @keyframes blink {
+        0%, 20%, 50%, 80%, 100% { opacity: 1; }
+        40% { opacity: 0.5; }
+        60% { opacity: 0; }
+    }
+
+    .model-details {
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+        border-radius: 20px;
+        padding: 35px;
+        margin-bottom: 40px;
+        border-left: 5px solid var(--primary-color);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    .model-details h2 {
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        font-size: 1.8em;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .model-details h2::before {
+        content: '📋';
+        font-size: 1.5em;
+    }
+
+    .model-details p {
+        color: var(--text-color);
+        line-height: 1.8;
+        margin-bottom: 12px;
+        font-size: 1em;
+    }
+
+    .model-details strong {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .disclaimer {
+        background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+        border-radius: 20px;
+        padding: 35px;
+        margin-top: 40px;
+        border-left: 5px solid var(--warning-color);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    .disclaimer h2 {
+        color: #e65100;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .disclaimer h2::before {
+        content: '⚠️';
+    }
+
+    .disclaimer p {
+        color: var(--text-color);
+        line-height: 1.8;
+        margin-bottom: 12px;
+        font-size: 1em;
+    }
+
+    .disclaimer strong {
+        color: #e65100;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 25px 15px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+        }
+
+        .header-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .model-details {
+            padding: 20px;
+        }
+
+        .graph-box {
+            padding: 20px;
+        }
+
+        .graph-box h2 {
+            font-size: 1.1em;
+        }
+
+        .disclaimer {
+            padding: 20px;
+        }
+
+        .disclaimer h2 {
+            font-size: 1.2em;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">📊</div>
+            <h1>Model Comparison Analysis</h1>
+            <p>Comprehensive comparison of machine learning algorithms</p>
+        </div>
+
+        <div class="nav-bar">
+            <a href="/" class="nav-link">← Back to Prediction</a>
+        </div>
+
+        <div class="model-details">
+            <h2>Model Details</h2>
+            <p><strong>Dataset:</strong> Cardiovascular disease prediction dataset with 70,000+ patient records</p>
+            <p><strong>Features:</strong> Age, gender, height, weight, blood pressure (systolic/diastolic), cholesterol, glucose, smoking, alcohol consumption, physical activity</p>
+            <p><strong>Target:</strong> Binary classification - presence/absence of cardiovascular disease</p>
+            <p><strong>Preprocessing:</strong> Feature scaling, BMI calculation, age conversion from days to years</p>
+            <p><strong>Algorithms Compared:</strong> Logistic Regression, KNN, Decision Tree, Random Forest, Gradient Boosting, Naive Bayes (Gaussian and Bernoulli)</p>
+            <p><strong>Evaluation:</strong> Train-test splits with varying test sizes (10%, 20%, 30%, 40%), 5-fold cross-validation, final evaluation on holdout test set</p>
+            <p><strong>Best Model:</strong> Gradient Boosting Classifier with 73.8% accuracy on test set</p>
+        </div>
+
+        <div class="loading" id="loading">Loading comparison graphs...</div>
+
+        <div class="graphs-container" id="graphsContainer" style="display: none !important;">
+            <div class="graph-box">
+                <h2>Case 1: Train-Test Split Comparison (Different Test Sizes)</h2>
+                <img id="case1" alt="Train-Test Split Comparison">
+            </div>
+
+            <div class="graph-box">
+                <h2>Case 2: Cross-Validation Comparison (5-Fold CV)</h2>
+                <img id="case2" alt="Cross-Validation Comparison">
+            </div>
+
+            <div class="graph-box">
+                <h2>Case 3: Best Accuracy on Test Set</h2>
+                <img id="case3" alt="Best Accuracy Comparison">
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <h2>Medical Disclaimer</h2>
+            <p><strong>Important:</strong> This AI assessment tool is designed for educational and informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment.</p>
+            <p><strong>Limitations:</strong> Machine learning models for medical prediction have inherent limitations and may produce false positives or false negatives. The model's accuracy of approximately 74% means that about 26% of predictions may be incorrect.</p>
+            <p><strong>Recommendation:</strong> Always consult with qualified healthcare providers for medical decisions and personalized health guidance. This tool should not be used as the sole basis for any health-related decisions.</p>
+            <p><strong>Data Privacy:</strong> All predictions are performed locally on your device. No personal health data is transmitted or stored on external servers.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function loadGraphs() {
+        try {
+            const loadingDiv = document.getElementById('loading');
+            loadingDiv.textContent = 'Loading comparison graphs...';
+
+            const response = await fetch('/api/comparison-graphs');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.graphs) {
+                throw new Error('Invalid data format received');
+            }
+
+            // Update graphs
+            console.log('Loading comparison graphs:', Object.keys(data.graphs));
+            for (const [key, value] of Object.entries(data.graphs)) {
+                const img = document.getElementById(key);
+                if (img && value) {
+                    img.src = 'data:image/png;base64,' + value;
+                    img.onerror = function() {
+                        console.error('Error loading image:', key);
+                    };
+                    img.onload = function() {
+                        console.log('Graph loaded:', key);
+                    };
+                } else {
+                    console.warn('Graph element not found or no data for:', key, 'img:', img, 'value:', value ? 'exists' : 'missing');
+                }
+            }
+
+            // Hide loading and show graphs container
+            loadingDiv.style.display = 'none';
+            const graphsContainer = document.getElementById('graphsContainer');
+            if (graphsContainer) {
+                // Remove inline style to let CSS take over
+                graphsContainer.removeAttribute('style');
+                graphsContainer.classList.add('visible');
+                console.log('Graphs container displayed');
+            } else {
+                console.error('Graphs container element not found!');
+            }
+        } catch (error) {
+            console.error('Error loading graphs:', error);
+            const loadingDiv = document.getElementById('loading');
+            if (loadingDiv) {
+                loadingDiv.textContent = 'Error loading graphs: ' + error.message + '. Please refresh the page.';
+                loadingDiv.style.color = '#d32f2f';
+            }
+        }
+    }
+
+    // Load graphs when page is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadGraphs);
+    } else {
+        loadGraphs();
+    }
+</script>
+{% endblock %}

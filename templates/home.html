@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Heart Health Check - Heart Health Prediction{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%);
+        min-height: 100vh;
+    }
+
+    .hero-section {
+        text-align: center;
+        padding: 80px 20px;
+        background: rgba(255, 255, 255, 0.9);
+        margin: 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: var(--accent-color);
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .cta-button {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,123,255,0.4);
+        color: white;
+    }
+
+    .features-section {
+        padding: 60px 20px;
+        background: rgba(255, 255, 255, 0.8);
+        margin: 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .features-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 50px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .feature-description {
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    .stats-section {
+        padding: 60px 20px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+        margin: 20px;
+        border-radius: 20px;
+        color: white;
+        text-align: center;
+    }
+
+    .stats-title {
+        font-size: 2.5rem;
+        margin-bottom: 50px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .stat-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 30px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .features-title {
+            font-size: 2rem;
+        }
+
+        .stats-title {
+            font-size: 2rem;
+        }
+
+        .features-section,
+        .stats-section,
+        .hero-section {
+            margin: 10px;
+            padding: 40px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="hero-section">
+            <div class="heartbeat-container" style="text-align: center; margin-bottom: 30px;">
+                <div class="heartbeat-line" style="font-size: 4rem; animation: heartbeat 1.5s infinite;">❤️</div>
+            </div>
+            <h1 class="hero-title">Welcome to CardioPredict AI</h1>
+            <p class="hero-subtitle">AI-powered tool for cardiovascular risk assessment using advanced machine learning algorithms</p>
+            <a href="{{ url_for('predict') }}" class="cta-button">
+                <i class="fas fa-stethoscope"></i> Start Prediction
+            </a>
+        </div>
+
+        <div class="features-section">
+            <h2 class="features-title">Why Choose CardioPredict AI?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">Advanced AI Technology</h3>
+                    <p class="feature-description">Utilizes Gradient Boosting Classifier trained on 70,000+ patient records for accurate cardiovascular risk prediction.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Comprehensive Analysis</h3>
+                    <p class="feature-description">Analyzes multiple health factors including age, blood pressure, cholesterol, lifestyle habits, and more.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Instant Results</h3>
+                    <p class="feature-description">Get immediate risk assessment results with detailed probability scores and personalized recommendations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Privacy First</h3>
+                    <p class="feature-description">All predictions are performed locally on your device. No personal health data is stored or transmitted.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="feature-title">Model Transparency</h3>
+                    <p class="feature-description">View detailed model performance metrics, comparison graphs, and feature importance analysis.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍⚕️</div>
+                    <h3 class="feature-title">Medical Disclaimer</h3>
+                    <p class="feature-description">Educational tool only. Always consult healthcare professionals for medical advice and decisions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2 class="stats-title">Project Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">70,000+</div>
+                    <div class="stat-label">Patient Records</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">73.8%</div>
+                    <div class="stat-label">Model Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Health Features</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">ML Algorithms Compared</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

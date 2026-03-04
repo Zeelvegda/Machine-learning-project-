@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment Results - CardioPredict AI{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="container">
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-icon">
+          {% if 'high' in prediction|lower %}
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="#f43f5e"/>
+              <path d="M22 22H2V20H22V22Z" fill="#f43f5e"/>
+            </svg>
+          {% else %}
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="#22c55e"/>
+            </svg>
+          {% endif %}
+        </div>
+        <h2 class="result-title">Assessment Complete</h2>
+        <p class="result-subtitle">Your cardiovascular risk analysis is ready</p>
+      </div>
+
+      <div class="result-content">
+        <div class="result-message {{ 'high-risk' if 'high' in prediction|lower else 'low-risk' }}">
+          <h3>{{ prediction }}</h3>
+          <div class="result-details">
+            {% if 'high' in prediction|lower %}
+              <p>Based on your health information, our AI model indicates an elevated risk for cardiovascular disease. We recommend consulting with a healthcare professional for a comprehensive evaluation.</p>
+              <div class="recommendations">
+                <h4>Recommended Next Steps:</h4>
+                <ul>
+                  <li>Schedule an appointment with your cardiologist</li>
+                  <li>Consider lifestyle modifications</li>
+                  <li>Monitor blood pressure and cholesterol regularly</li>
+                  <li>Discuss preventive medications if appropriate</li>
+                </ul>
+              </div>
+            {% else %}
+              <p>Great news! Based on your health information, our AI model indicates a low risk for cardiovascular disease. Continue maintaining your healthy lifestyle habits.</p>
+              <div class="recommendations">
+                <h4>Keep Up the Good Work:</h4>
+                <ul>
+                  <li>Maintain regular physical activity</li>
+                  <li>Follow a heart-healthy diet</li>
+                  <li>Continue regular health check-ups</li>
+                  <li>Monitor your health metrics</li>
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <a href="{{ url_for('predict') }}" class="btn btn-secondary">
+          <span>🔄</span>
+          New Assessment
+        </a>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">
+          <span>🏠</span>
+          Back to Home
+        </a>
+      </div>
+
+      <div class="disclaimer">
+        <p><strong>Disclaimer:</strong> This assessment is for informational purposes only and should not replace professional medical advice. Always consult with qualified healthcare providers for medical decisions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

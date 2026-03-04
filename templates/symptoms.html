@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Heart Disease Symptoms - CardioPredict AI{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1>Heart Disease Symptoms Guide</h1>
+      <p>Learn about common cardiovascular warning signs and when to seek medical attention</p>
+    </div>
+
+    <!-- ECG Animation -->
+    <div class="ecg-container">
+      <svg viewBox="0 0 600 100" class="ecg-animation">
+        <polyline
+          points="
+            0,50
+            50,50
+            70,50
+            80,20
+            90,80
+            100,50
+            160,50
+            180,50
+            190,30
+            200,70
+            210,50
+            260,50
+            600,50
+          "
+          class="ecg-line"
+        />
+      </svg>
+    </div>
+
+    <!-- Warning Notice -->
+    <div class="info-card warning">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM13 7H11V11H13V7ZM13 13H11V15H13V13Z" fill="var(--warning-color)"/>
+        </svg>
+      </div>
+      <h3>Important Medical Notice</h3>
+      <p>This symptoms guide is for informational purposes only and should not replace professional medical advice. If you experience any of these symptoms, especially chest pain or shortness of breath, seek immediate medical attention. Early evaluation can be life-saving.</p>
+    </div>
+
+    <!-- Common Symptoms -->
+    <div class="symptoms-grid">
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="var(--danger-color)"/>
+          </svg>
+        </div>
+        <h4>Chest Pain or Discomfort</h4>
+        <p>Pressure, tightness, squeezing, or burning sensation in the chest. May radiate to arms, neck, jaw, or back.</p>
+        <div class="severity-indicator">
+          <span class="severity high">High Priority</span>
+        </div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H19V9Z" fill="var(--warning-color)"/>
+          </svg>
+        </div>
+        <h4>Shortness of Breath</h4>
+        <p>Difficulty breathing, especially during physical activity or when lying down. May occur suddenly or gradually.</p>
+        <div class="severity-indicator">
+          <span class="severity high">High Priority</span>
+        </div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="var(--warning-color)"/>
+          </svg>
+        </div>
+        <h4>Unusual Fatigue</h4>
+        <p>Extreme tiredness, weakness, or lack of energy that doesn't improve with rest. May be accompanied by dizziness.</p>
+        <div class="severity-indicator">
+          <span class="severity medium">Medium Priority</span>
+        </div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21.02L12 17.77L5.82 21.02L7 14L2 9L8.91 8.26L12 2Z" fill="var(--accent-color)"/>
+          </svg>
+        </div>
+        <h4>Irregular Heartbeat</h4>
+        <p>Heart palpitations, fluttering, racing, or pounding sensations. May feel like the heart is skipping beats.</p>
+        <div class="severity-indicator">
+          <span class="severity medium">Medium Priority</span>
+        </div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM13 7H11V11H13V7ZM13 13H11V15H13V13Z" fill="var(--primary-color)"/>
+          </svg>
+        </div>
+        <h4>Dizziness or Lightheadedness</h4>
+        <p>Feeling faint, dizzy, or like you're about to pass out. May occur when standing up quickly.</p>
+        <div class="severity-indicator">
+          <span class="severity medium">Medium Priority</span>
+        </div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM7 9.5C7 8.67 7.67 8 8.5 8S10 8.67 10 9.5 9.33 11 8.5 11 7 10.33 7 9.5ZM16.5 18C15.67 18 15 17.33 15 16.5S15.67 15 16.5 15 18 15.67 18 16.5 17.33 18 16.5 18ZM16.5 11C15.67 11 15 10.33 15 9.5S15.67 8 16.5 8 18 8.67 18 9.5 17.33 11 16.5 11Z" fill="var(--primary-color)"/>
+          </svg>
+        </div>
+        <h4>Swelling in Legs or Ankles</h4>
+        <p>Edema or swelling in the lower extremities, often worse at the end of the day.</p>
+        <div class="severity-indicator">
+          <span class="severity low">Low Priority</span>
+        </div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="var(--warning-color)"/>
+          </svg>
+        </div>
+        <h4>Nausea or Indigestion</h4>
+        <p>Unexplained nausea, vomiting, or indigestion that may be mistaken for gastrointestinal issues.</p>
+        <div class="severity-indicator">
+          <span class="severity low">Low Priority</span>
+        </div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM13 7H11V11H13V7ZM13 13H11V15H13V13Z" fill="var(--primary-color)"/>
+          </svg>
+        </div>
+        <h4>Cold Sweats</h4>
+        <p>Sudden, unexplained sweating, especially when accompanied by other symptoms.</p>
+        <div class="severity-indicator">
+          <span class="severity medium">Medium Priority</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- When to Seek Help -->
+    <div class="info-card highlight">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="var(--danger-color)"/>
+        </svg>
+      </div>
+      <h3>When to Seek Emergency Care</h3>
+      <div class="emergency-signs">
+        <div class="emergency-item">
+          <span class="emergency-icon">🚨</span>
+          <span>Chest pain lasting more than a few minutes</span>
+        </div>
+        <div class="emergency-item">
+          <span class="emergency-icon">🚨</span>
+          <span>Shortness of breath or difficulty breathing</span>
+        </div>
+        <div class="emergency-item">
+          <span class="emergency-icon">🚨</span>
+          <span>Fainting or loss of consciousness</span>
+        </div>
+        <div class="emergency-item">
+          <span class="emergency-icon">🚨</span>
+          <span>Severe weakness or numbness</span>
+        </div>
+        <div class="emergency-item">
+          <span class="emergency-icon">🚨</span>
+          <span>Sudden confusion or trouble speaking</span>
+        </div>
+      </div>
+      <p><strong>Call emergency services (911) immediately if you experience any of these symptoms!</strong></p>
+    </div>
+
+    <!-- Risk Assessment CTA -->
+    <div class="cta-card">
+      <h3>Take Control of Your Heart Health</h3>
+      <p>Use our AI-powered assessment tool to evaluate your cardiovascular risk factors and get personalized insights.</p>
+      <div class="cta-actions">
+        <a href="{{ url_for('predict') }}" class="btn btn-primary">
+          <span>🔍</span>
+          Start Risk Assessment
+        </a>
+        <a href="{{ url_for('about') }}" class="btn btn-secondary">
+          <span>📚</span>
+          Learn More
+        </a>
+      </div>
+    </div>
+
+    <!-- Prevention Tips -->
+    <div class="info-card">
+      <div class="card-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21.02L12 17.77L5.82 21.02L7 14L2 9L8.91 8.26L12 2Z" fill="var(--success-color)"/>
+        </svg>
+      </div>
+      <h3>Prevention is Key</h3>
+      <div class="prevention-tips">
+        <div class="tip-item">
+          <span class="tip-icon">❤️</span>
+          <span>Maintain a healthy diet low in saturated fats and cholesterol</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-icon">🏃‍♂️</span>
+          <span>Exercise regularly (at least 150 minutes per week)</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-icon">🚭</span>
+          <span>Avoid smoking and limit alcohol consumption</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-icon">⚖️</span>
+          <span>Maintain a healthy weight and BMI</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-icon">🩺</span>
+          <span>Regular health check-ups and blood pressure monitoring</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-icon">😴</span>
+          <span>Get adequate sleep and manage stress</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

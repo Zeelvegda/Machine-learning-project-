@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Frequently Asked Questions - CardioPredict AI{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1>Frequently Asked Questions</h1>
+      <p>Everything you need to know about CardioPredict AI and cardiovascular health assessment</p>
+    </div>
+
+    <!-- ECG Animation -->
+    <div class="ecg-container">
+      <svg viewBox="0 0 600 100" class="ecg-animation">
+        <polyline
+          points="
+            0,50
+            50,50
+            70,50
+            80,20
+            90,80
+            100,50
+            160,50
+            180,50
+            190,30
+            200,70
+            210,50
+            260,50
+            600,50
+          "
+          class="ecg-line"
+        />
+      </svg>
+    </div>
+
+    <!-- FAQ Search -->
+    <div class="faq-search">
+      <div class="search-container">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z" fill="var(--text-secondary)"/>
+        </svg>
+        <input type="text" id="faqSearch" placeholder="Search questions..." />
+      </div>
+    </div>
+
+    <!-- FAQ Categories -->
+    <div class="faq-categories">
+      <button class="category-btn active" data-category="all">All Questions</button>
+      <button class="category-btn" data-category="accuracy">Accuracy & Science</button>
+      <button class="category-btn" data-category="usage">How to Use</button>
+      <button class="category-btn" data-category="privacy">Privacy & Safety</button>
+      <button class="category-btn" data-category="medical">Medical Questions</button>
+    </div>
+
+    <!-- FAQ Items -->
+    <div class="faq-accordion">
+      <!-- Accuracy & Science -->
+      <div class="faq-item" data-category="accuracy">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21.02L12 17.77L5.82 21.02L7 14L2 9L8.91 8.26L12 2Z" fill="var(--primary-color)"/>
+            </svg>
+          </div>
+          <h4>How accurate is CardioPredict AI?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p>Our XGBoost model achieves 74% accuracy based on comprehensive evaluation with over 70,000 patient records. While this represents strong performance for medical prediction, accuracy can vary based on individual factors. The system provides probabilistic risk assessment rather than definitive diagnosis.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="accuracy">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="var(--primary-color)"/>
+            </svg>
+          </div>
+          <h4>What machine learning algorithm do you use?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p>We use XGBoost (Extreme Gradient Boosting), which outperformed other algorithms including Random Forest, SVM, and Logistic Regression. XGBoost excels at handling complex feature interactions and provides excellent regularization to prevent overfitting, making it particularly suitable for medical prediction tasks.</p>
+        </div>
+      </div>
+
+      <!-- How to Use -->
+      <div class="faq-item" data-category="usage">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H19V9Z" fill="var(--primary-color)"/>
+            </svg>
+          </div>
+          <h4>How do I use the risk assessment tool?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p>Navigate to the "Health Assessment" page and fill out the comprehensive form with your medical information including age, gender, physical measurements, blood pressure, cholesterol levels, glucose levels, and lifestyle factors. The AI will analyze your data and provide a risk assessment within seconds.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="usage">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="var(--primary-color)"/>
+            </svg>
+          </div>
+          <h4>What information do I need to provide?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p>You'll need to provide: age, gender, height, weight, systolic and diastolic blood pressure, cholesterol level, glucose level, smoking status, alcohol consumption, and physical activity level. All fields are required for accurate risk assessment.</p>
+        </div>
+      </div>
+
+      <!-- Privacy & Safety -->
+      <div class="faq-item" data-category="privacy">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 8H17V6C17 3.24 14.76 1 12 1S7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15S10.9 13 12 13 14 13.9 14 15 13.1 17 12 17ZM9 8V6C9 4.34 10.34 3 12 3S15 4.34 15 6V8H9Z" fill="var(--primary-color)"/>
+            </svg>
+          </div>
+          <h4>Is my personal health data safe?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p>Yes, your privacy is our top priority. All data processing happens locally on your device or our secure servers. Personal information is not stored permanently - it's used only for the immediate risk calculation and then discarded. We follow HIPAA-compliant practices for health data handling.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="privacy">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="var(--primary-color)"/>
+            </svg>
+          </div>
+          <h4>Do you share my data with third parties?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p>No, we do not share, sell, or distribute any personal health information. Your data is processed confidentially and used solely for generating your risk assessment. We are committed to maintaining the highest standards of data privacy and security.</p>
+        </div>
+      </div>
+
+      <!-- Medical Questions -->
+      <div class="faq-item" data-category="medical">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM13 7H11V11H13V7ZM13 13H11V15H13V13Z" fill="var(--warning-color)"/>
+            </svg>
+          </div>
+          <h4>Can this replace a doctor's diagnosis?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p><strong>No, absolutely not.</strong> CardioPredict AI is designed for educational and informational purposes only. It cannot replace professional medical diagnosis, treatment, or advice. Always consult qualified healthcare providers for medical decisions, especially if you have symptoms or health concerns.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="medical">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="var(--warning-color)"/>
+            </svg>
+          </div>
+          <h4>When should I see a doctor instead of using this tool?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p>You should seek immediate medical attention if you experience: chest pain, shortness of breath, fainting, severe dizziness, irregular heartbeat, or any other concerning symptoms. This tool is for risk assessment and health awareness, not for emergency situations or medical emergencies.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="medical">
+        <div class="faq-question">
+          <div class="question-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21.02L12 17.77L5.82 21.02L7 14L2 9L8.91 8.26L12 2Z" fill="var(--success-color)"/>
+            </svg>
+          </div>
+          <h4>How can I reduce my cardiovascular risk?</h4>
+          <div class="faq-toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10H7Z" fill="var(--text-secondary)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <p>Focus on lifestyle modifications: maintain a healthy diet, exercise regularly, avoid smoking, limit alcohol, manage stress, and get regular health check-ups. Our tool can help you understand your risk factors, but consult healthcare professionals for personalized prevention strategies.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact CTA -->
+    <div class="contact-cta">
+      <h3>Still have questions?</h3>
+      <p>If you can't find the answer you're looking for, feel free to reach out to us.</p>
+      <div class="contact-actions">
+        <a href="{{ url_for('about') }}" class="btn btn-secondary">
+          <span>📚</span>
+          Learn More
+        </a>
+        <a href="mailto:support@cardiopredict.ai" class="btn btn-primary">
+          <span>💬</span>
+          Contact Support
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

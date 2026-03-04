@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+
+{% block title %}Model Performance Metrics - CardioPredict AI{% endblock %}
+
+{% block extra_head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    body {
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 25px;
+        padding: 50px 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .header-icon {
+        font-size: 70px;
+        margin-bottom: 20px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+    }
+
+    .header h1 {
+        color: var(--primary-color);
+        font-size: 2.5em;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .header p {
+        color: var(--accent-color);
+        font-size: 1.1em;
+        font-weight: 500;
+    }
+
+    .nav-bar {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .nav-link {
+        color: white;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+        text-decoration: none;
+        font-size: 1em;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 50px;
+        display: inline-block;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+        font-weight: 600;
+    }
+
+    .nav-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(231,76,60,0.4);
+    }
+
+    .metrics-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 50px;
+    }
+
+    .metric-card {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 30px 20px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(231,76,60,0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .metric-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .metric-card:hover::before {
+        left: 100%;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(231,76,60,0.3);
+    }
+
+    .metric-icon {
+        font-size: 2em;
+        margin-bottom: 10px;
+        opacity: 0.9;
+    }
+
+    .metric-card h3 {
+        font-size: 0.9em;
+        margin-bottom: 12px;
+        opacity: 0.95;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .metric-card .value {
+        font-size: 2.2em;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .graphs-container {
+        margin-top: 40px;
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
+        gap: 25px;
+        width: 100%;
+    }
+
+    .graph-box {
+        background: white;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .graph-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .graph-box h2 {
+        color: var(--primary-color);
+        margin-bottom: 18px;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .graph-box h2::before {
+        content: '📊';
+        font-size: 1.3em;
+    }
+
+    .graph-box img {
+        width: 100%;
+        height: auto;
+        border-radius: 15px;
+        transition: transform 0.3s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .graph-box:hover img {
+        transform: scale(1.01);
+    }
+
+    .loading {
+        text-align: center;
+        padding: 60px 40px;
+        color: var(--primary-color);
+        font-size: 1.2em;
+        font-weight: 600;
+    }
+
+    .loading::after {
+        content: '';
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        margin-left: 8px;
+        animation: dots 1.3s infinite;
+    }
+
+    @keyframes dots {
+        0%, 20%, 50%, 80%, 100% { opacity: 1; }
+        40% { opacity: 0.5; }
+        60% { opacity: 0; }
+    }
+
+    @media (max-width: 1200px) {
+        .graphs-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .metrics-cards {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .graphs-container {
+            grid-template-columns: 1fr;
+        }
+
+        .container {
+            padding: 25px 15px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+        }
+
+        .header-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .metric-card {
+            padding: 20px 15px;
+        }
+
+        .metric-card .value {
+            font-size: 1.8em;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">📊</div>
+            <h1>Model Performance</h1>
+            <p>Comprehensive analysis of our AI model</p>
+        </div>
+
+        <div class="nav-bar">
+            <a href="/" class="nav-link">← Back to Prediction</a>
+        </div>
+
+        <div class="metrics-cards" id="metricsCards">
+            <div class="metric-card">
+                <h3>Accuracy</h3>
+                <div class="value" id="accuracy">-</div>
+            </div>
+            <div class="metric-card">
+                <h3>Precision</h3>
+                <div class="value" id="precision">-</div>
+            </div>
+            <div class="metric-card">
+                <h3>Recall</h3>
+                <div class="value" id="recall">-</div>
+            </div>
+            <div class="metric-card">
+                <h3>F1 Score</h3>
+                <div class="value" id="f1">-</div>
+            </div>
+            <div class="metric-card">
+                <h3>ROC-AUC</h3>
+                <div class="value" id="rocAuc">-</div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">Loading graphs...</div>
+
+        <div class="graphs-container" id="graphsContainer" style="display: none !important;">
+            <div class="graph-box">
+                <h2>Confusion Matrix</h2>
+                <img id="confusion_matrix" alt="Confusion Matrix">
+            </div>
+
+            <div class="graph-box">
+                <h2>ROC Curve</h2>
+                <img id="roc_curve" alt="ROC Curve">
+            </div>
+
+            <div class="graph-box">
+                <h2>Feature Importance</h2>
+                <img id="feature_importance" alt="Feature Importance">
+            </div>
+
+            <div class="graph-box">
+                <h2>Performance Metrics</h2>
+                <img id="metrics_bar" alt="Metrics Bar Chart">
+            </div>
+
+            <div class="graph-box">
+                <h2>Precision-Recall Curve</h2>
+                <img id="pr_curve" alt="Precision-Recall Curve">
+            </div>
+
+            <div class="graph-box">
+                <h2>Prediction Distribution</h2>
+                <img id="pred_dist" alt="Prediction Distribution">
+            </div>
+
+            <div class="graph-box full-width">
+                <h2>Classification Report</h2>
+                <img id="class_report" alt="Classification Report">
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function loadGraphs() {
+        try {
+            const loadingDiv = document.getElementById('loading');
+            loadingDiv.textContent = 'Loading graphs...';
+
+            const response = await fetch('/api/graphs');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.metrics || !data.graphs) {
+                throw new Error('Invalid data format received');
+            }
+
+            // Update metrics
+            if (document.getElementById('accuracy')) {
+                document.getElementById('accuracy').textContent = (data.metrics.accuracy * 100).toFixed(1) + '%';
+            }
+            if (document.getElementById('precision')) {
+                document.getElementById('precision').textContent = (data.metrics.precision * 100).toFixed(1) + '%';
+            }
+            if (document.getElementById('recall')) {
+                document.getElementById('recall').textContent = (data.metrics.recall * 100).toFixed(1) + '%';
+            }
+            if (document.getElementById('f1')) {
+                document.getElementById('f1').textContent = (data.metrics.f1 * 100).toFixed(1) + '%';
+            }
+            if (document.getElementById('rocAuc')) {
+                document.getElementById('rocAuc').textContent = data.metrics.roc_auc.toFixed(3);
+            }
+
+            // Update graphs
+            console.log('Loading graphs:', Object.keys(data.graphs));
+            for (const [key, value] of Object.entries(data.graphs)) {
+                const img = document.getElementById(key);
+                if (img && value) {
+                    img.src = 'data:image/png;base64,' + value;
+                    img.onerror = function() {
+                        console.error('Error loading image:', key);
+                    };
+                    img.onload = function() {
+                        console.log('Graph loaded:', key);
+                    };
+                } else {
+                    console.warn('Graph element not found or no data for:', key, 'img:', img, 'value:', value ? 'exists' : 'missing');
+                }
+            }
+
+            // Hide loading and show graphs container
+            loadingDiv.style.display = 'none';
+            const graphsContainer = document.getElementById('graphsContainer');
+            if (graphsContainer) {
+                // Remove inline style to let CSS take over
+                graphsContainer.removeAttribute('style');
+                graphsContainer.classList.add('visible');
+                console.log('Graphs container displayed');
+            } else {
+                console.error('Graphs container element not found!');
+            }
+        } catch (error) {
+            console.error('Error loading graphs:', error);
+            const loadingDiv = document.getElementById('loading');
+            if (loadingDiv) {
+                loadingDiv.textContent = 'Error loading graphs: ' + error.message + '. Please refresh the page.';
+                loadingDiv.style.color = '#d32f2f';
+            }
+        }
+    }
+
+    // Load graphs when page is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadGraphs);
+    } else {
+        loadGraphs();
+    }
+</script>
+{% endblock %}
